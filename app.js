@@ -1,33 +1,14 @@
 const http = require('http')
 const fs = require('fs')
-const { url } = require('inspector')
 http.createServer(function (req, res) {
-    res.writeHead(200, { 'Content-Type': 'text/html' })
-    switch (req.url) {
-        case '/':
-            readFile('./index.html', res, 'text/html')
-            break;
-        case '/info':
-            readFile('./info.html', res, 'text/html')
-            break;
-        case '/about':
-            readFile('./about.html', res, 'text/html')
-            break;
-        // read css
-        case './assets/style.css':
-            readFile('/assets/style.css', res, 'text/css')
-            break
-        default:
-            res.writeHead(404)
-    }
-    res.end()
-
-}).listen(8080)
-
-function readFile(path, res, type) {
+    const path = req.url === '/' ? 'index.html' : ['/about', '/contacts', '/info'].includes(req.url) ? `${req.url.slice(1)}.html` : req.url.endsWith('.css') ? 'assets/style.css' : ''
     fs.readFile(path, (err, data) => {
-        if (err) throw err
-        res.writeHead(200, { 'Content-Type': type })
-        res.write(data)
+        if (err) {
+            res.writeHead(404, { 'Content-Type': 'text/html' })
+            res.end('404 Not Found')
+        }
+        const contentType = path.endsWith('.html') ? 'text/html' : path.endsWith('.css') ? 'text/css' : ''
+        res.writeHead(404, { 'Content-Type': contentType })
+        res.end(data)
     })
-}
+}).listen(3000)
