@@ -1,5 +1,8 @@
 const http = require('http')
 const fs = require('fs')
+
+// Constant
+const port = 3000
 http.createServer(function (req, res) {
     const path = req.url === '/' ? 'index.html' : ['/about', '/contacts', '/info'].includes(req.url) ? `${req.url.slice(1)}.html` : req.url.endsWith('.css') ? 'assets/style.css' : ''
     fs.readFile(path, (err, data) => {
@@ -11,4 +14,6 @@ http.createServer(function (req, res) {
         res.writeHead(404, { 'Content-Type': contentType })
         res.end(data)
     })
-}).listen(3000)
+}).listen(port, () => {
+    console.log(`Listening on port ${port}`)
+})
