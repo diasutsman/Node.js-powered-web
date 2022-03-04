@@ -1,19 +1,50 @@
 const http = require('http')
-const fs = require('fs')
-
+const { FileResponse } = require('./fr')
 // Constant
 const port = 3000
 http.createServer(function (req, res) {
-    const path = req.url === '/' ? 'index.html' : ['/about', '/contacts', '/info'].includes(req.url) ? `${req.url.slice(1)}.html` : req.url.endsWith('.css') ? 'assets/style.css' : req.url == '/img/kota-bg.png' ? 'img/kota-bg.png' : ''
-    fs.readFile(path, (err, data) => {
-        if (err) {
-            res.writeHead(404, { 'Content-Type': 'text/html' })
-            res.end('404 Not Found')
-        }
-        const contentType = path.endsWith('.html') ? 'text/html' : path.endsWith('.css') ? 'text/css' : ''
-        res.writeHead(200, { 'Content-Type': contentType })
-        res.end(data)
-    })
+    const fileResponse = new FileResponse(res)
+
+    fileResponse.addResponse('/', 'index.html', 'text/html')
+    fileResponse.addResponse('/contacts', 'contacts.html', 'text/html')
+    fileResponse.addResponse('/info', 'info.html', 'text/html')
+    fileResponse.addResponse('/about', 'about.html', 'text/html')
+
+    //fileResponse.addResponse('/assets/style.css', 'assets/style.css', 'text/css')
+    fileResponse.addResponse('/img/kota-bg.png', 'img/kota-bg.png', 'image/png')
+
+    // bootstrap
+    fileResponse.addResponse(
+        '/assets/bootstrap/css/bootstrap.min.css',
+        'assets/bootstrap/css/bootstrap.min.css',
+        'text/css'
+    )
+
+    fileResponse.addResponse(
+        '/assets/css/styles.min.css',
+        'assets/css/styles.min.css',
+        'text/css'
+    )
+
+    fileResponse.addResponse(
+        '/assets/fonts/simple-line-icons.min.css',
+        'assets/fonts/simple-line-icons.min.css',
+        'text/css'
+    )
+
+    fileResponse.addResponse(
+        '/assets/bootstrap/js/bootstrap.min.js',
+        'assets/bootstrap/js/bootstrap.min.js',
+        'application/javascript'
+    )
+
+    fileResponse.addResponse(
+        '/assets/js/script.min.js',
+        'assets/js/script.min.js',
+        'application/javascript'
+    )
+
+    fileResponse.response(req.url)
 }).listen(port, () => {
     console.log(`Listening on port ${port}`)
 })
