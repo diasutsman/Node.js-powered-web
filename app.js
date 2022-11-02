@@ -5,7 +5,7 @@ const port = 3000
 http.createServer(function (req, res) {
     const fileResponse = new FileResponse(res)
 
-    fileResponse.addResponse('/', 'index.html', 'text/html')
+    fileResponse.addResponse('/index', 'index.html', 'text/html')
     fileResponse.addResponse('/contacts', 'contacts.html', 'text/html')
     fileResponse.addResponse('/info', 'info.html', 'text/html')
     fileResponse.addResponse('/about', 'about.html', 'text/html')
